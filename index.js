@@ -25,6 +25,7 @@ app.post('/user/referrals', async (req, res) => {
     let user = await itemModel.findOne({ userId });
     if (!user) {
       // Create new user with the referrer ID
+      conslole.log(userId, referrerId, referrals)
       user = new itemModel({ userId, referrerId, referrals: [] });
     }
 
