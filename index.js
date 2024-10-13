@@ -6,7 +6,9 @@ require('dotenv').config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://referalsystem.vercel.app'  // Replace this with your frontend URL
+}));
 connectDB();
 
 
