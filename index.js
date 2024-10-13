@@ -7,44 +7,61 @@ require('dotenv').config();
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: 'https://referalsystem.vercel.app'  // Replace this with your frontend URL
+  origin: 'https://referalsystem.vercel.app'  // Replace with your frontend URL
 }));
+
 connectDB();
 
-
-// POST: Save itemModel
-app.post('user/referrals', async (req, res) => {
+// POST: Save referral information
+app.post('/user/referrals', async (req, res) => {
   const { userId, referrerId } = req.body;
+  
   if (!userId || !referrerId) {
     return res.status(400).json({ error: 'Missing userId or referrerId' });
   }
 
-  // Check if user already exists
-  let user = await itemModel.findOne({ userId });
-  if (!user) {
-    user = new itemModel({ userId, referrerId });
-  }
+  try {
+    // Check if the user already exists
+    let user = await itemModel.findOne({ userId });
+    if (!user) {
+      // Create new user with the referrer ID
+      user = new itemModel({ userId, referrerId, referrals: [] });
+    }
 
-  user.referrals.push(userId);
-  await user.save();
-  return res.json({ success: true });
+    // Save referrer if not self-referring
+    if (userId !== referrerId && !user.referrals.includes(userId)) {
+      user.referrals.push(referrerId); // Referrer is being recorded
+    }
+
+    await user.save();
+    return res.json({ success: true });
+  } catch (error) {
+    console.error('Error saving referral:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
-// GET: Fetch referrals
-app.get('user/referrals', async (req, res) => {
+// GET: Fetch referral data
+app.get('/user/referrals', async (req, res) => {
   const { userId } = req.query;
+
   if (!userId) {
     return res.status(400).json({ error: 'Missing userId' });
   }
 
-  const user = await itemModel.findOne({ userId });
-  if (!user) {
-    return res.json({ referrals: [], referrer: null });
+  try {
+    const user = await itemModel.findOne({ userId });
+
+    if (!user) {
+      return res.json({ referrals: [], referrer: null });
+    }
+
+    return res.json({ referrals: user.referrals, referrer: user.referrerId });
+  } catch (error) {
+    console.error('Error fetching referrals:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
-
-  return res.json({ referrals: user.referrals, referrer: user.referrerId });
 });
-
 
 app.listen(process.env.PORT, () => {
   console.log("App is running on port " + process.env.PORT);
