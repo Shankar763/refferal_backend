@@ -26,7 +26,7 @@ app.post('/user/referrals', async (req, res) => {
     if (!user) {
       // Create new user with the referrer ID
       console.log("heelo from post")
-      conslole.log(userId, referrerId, referrals)
+      console.log(userId, referrerId, referrals)
       user = new itemModel({ userId, referrerId, referrals: [] });
     }
 
