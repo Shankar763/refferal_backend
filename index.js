@@ -25,8 +25,10 @@ app.post('/user/referrals', async (req, res) => {
     let user = await itemModel.findOne({ userId });
     if (!user) {
       // Create new user with the referrer ID
-      console.log("heelo from post")
-      console.log(userId, referrerId, referrals)
+      console.log("heelo from post 1")
+      console.log(userId)
+      console.log(referrerId)
+      console.log(referrals);
       user = new itemModel({ userId, referrerId, referrals: [] });
     }
 
