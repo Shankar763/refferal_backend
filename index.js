@@ -30,8 +30,11 @@ app.post('/user/referrals', async (req, res) => {
     }
 
     // Save referrer if not self-referring
-    if (userId !== referrerId && !user.referrals.includes(userId)) {
-      user.referrals.push(referrerId); // Referrer is being recorded
+    // if (userId !== referrerId && !user.referrals.includes(userId)) {
+    //   user.referrals.push(referrerId); // Referrer is being recorded
+    // }
+    if (userId !== referrerId && !user.referrals.includes(referrerId)) {
+      user.referrals.push(referrerId); 
     }
 
     await user.save();
