@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 const itemSchema = new mongoose.Schema({
-    userId: { type: String, required: true },
-  referrerId: { type: String, required: false },
+  userId: { type: String, required: true, unique: true },
+  referrerId: { type: String, default: null },
   referrals: { type: [String], default: [] },
+  points: { type: Number, default: 0 },  // New field for points
 });
 
 // Create the model using the schema
