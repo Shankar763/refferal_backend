@@ -62,7 +62,7 @@ app.get('/user/referrals', async (req, res) => {
     if (!user) {
       return res.json({ referrals: [], referrer: null });
     }
-    conslole.log(user)
+    console.log(user)
     return res.json({ referrals: user.referrals, referrer: user.referrerId });
   } catch (error) {
     console.error('Error fetching referrals:', error);
