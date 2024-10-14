@@ -25,17 +25,18 @@ app.post('/user/referrals', async (req, res) => {
     let user = await itemModel.findOne({ userId });
     if (!user) {
       // Create new user with the referrer ID
+      console.log("heelo from post")
       conslole.log(userId, referrerId, referrals)
       user = new itemModel({ userId, referrerId, referrals: [] });
     }
 
     // Save referrer if not self-referring
-    // if (userId !== referrerId && !user.referrals.includes(userId)) {
-    //   user.referrals.push(referrerId); // Referrer is being recorded
-    // }
-    if (userId !== referrerId && !user.referrals.includes(referrerId)) {
-      user.referrals.push(referrerId); 
+    if (userId !== referrerId && !user.referrals.includes(userId)) {
+      user.referrals.push(referrerId); // Referrer is being recorded
     }
+    // if (userId !== referrerId && !user.referrals.includes(referrerId)) {
+    //   user.referrals.push(referrerId); 
+    // }
 
     await user.save();
     return res.json({ success: true });
@@ -59,7 +60,7 @@ app.get('/user/referrals', async (req, res) => {
     if (!user) {
       return res.json({ referrals: [], referrer: null });
     }
-
+    conslole.log(user)
     return res.json({ referrals: user.referrals, referrer: user.referrerId });
   } catch (error) {
     console.error('Error fetching referrals:', error);
